@@ -39,7 +39,7 @@ public record RetrieveCurrencyExchangeTransactionResponse(
         @JsonProperty("resultingAmount")
         @JsonInclude(JsonInclude.Include.NON_ABSENT)
         @JsonSetter(nulls = Nulls.FAIL)
-        Double resultingAmount,
+        BigDecimal resultingAmount,
 
         @JsonProperty("createdAt")
         String createdAt,
