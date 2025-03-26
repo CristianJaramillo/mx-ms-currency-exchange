@@ -1,8 +1,7 @@
 package mx.bank.ms.currency_exchange.domain.model;
 
-import lombok.*;
-
 import java.math.BigDecimal;
+import java.util.Date;
 
 public record CurrencyExchangeTransactionModel(
         String id,
@@ -15,6 +14,6 @@ public record CurrencyExchangeTransactionModel(
         BigDecimal sellAmount,
         String sellCurrency,
         BigDecimal resultingAmount,
-        String createdAt,
-        String updatedAt
+        Date createdAt,
+        Date updatedAt
 ) {}

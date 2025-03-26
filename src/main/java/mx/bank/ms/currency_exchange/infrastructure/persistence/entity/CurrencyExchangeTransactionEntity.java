@@ -64,4 +64,99 @@ public class CurrencyExchangeTransactionEntity {
     public CurrencyExchangeTransactionEntity() {
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public BigDecimal getOriginalAmount() {
+        return originalAmount;
+    }
+
+    public void setOriginalAmount(BigDecimal originalAmount) {
+        this.originalAmount = originalAmount;
+    }
+
+    public String getSourceCurrency() {
+        return sourceCurrency;
+    }
+
+    public void setSourceCurrency(String sourceCurrency) {
+        this.sourceCurrency = sourceCurrency;
+    }
+
+    public String getTargetCurrency() {
+        return targetCurrency;
+    }
+
+    public void setTargetCurrency(String targetCurrency) {
+        this.targetCurrency = targetCurrency;
+    }
+
+    public BigDecimal getBuyAmount() {
+        return buyAmount;
+    }
+
+    public void setBuyAmount(BigDecimal buyAmount) {
+        this.buyAmount = buyAmount;
+    }
+
+    public String getBuyCurrency() {
+        return buyCurrency;
+    }
+
+    public void setBuyCurrency(String buyCurrency) {
+        this.buyCurrency = buyCurrency;
+    }
+
+    public BigDecimal getSellAmount() {
+        return sellAmount;
+    }
+
+    public void setSellAmount(BigDecimal sellAmount) {
+        this.sellAmount = sellAmount;
+    }
+
+    public String getSellCurrency() {
+        return sellCurrency;
+    }
+
+    public void setSellCurrency(String sellCurrency) {
+        this.sellCurrency = sellCurrency;
+    }
+
+    public BigDecimal getResultingAmount() {
+        return resultingAmount;
+    }
+
+    public void setResultingAmount(BigDecimal resultingAmount) {
+        this.resultingAmount = resultingAmount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

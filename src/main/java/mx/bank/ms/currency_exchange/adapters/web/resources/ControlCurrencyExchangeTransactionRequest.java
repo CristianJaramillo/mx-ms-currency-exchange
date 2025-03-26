@@ -8,9 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record ControlCurrencyExchangeTransactionRequest(
 
         @JsonProperty("id")
-        String id,
-
-        @JsonProperty("status")
-        TransactionStatus status
+        String id
 
 ) {}

@@ -1,21 +1,16 @@
-package mx.bank.ms.currency_exchange.adapters.web.resources;
+package mx.bank.ms.currency_exchange.infrastructure.messaging.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import mx.bank.ms.currency_exchange.adapters.web.resources.serializer.BigDecimalFourDigitsSerializer;
+import mx.bank.ms.currency_exchange.infrastructure.messaging.message.serializer.BigDecimalFourDigitsSerializer;
 
 import java.math.BigDecimal;
 
-/**
- * AmountAndCurrency
- */
-public record AmountAndCurrency(
-
+public record AmountAndCurrencyMessage (
         @JsonProperty("amount")
         @JsonSerialize(using = BigDecimalFourDigitsSerializer.class)
         BigDecimal amount,
 
         @JsonProperty("currency")
         String currency
-
-) {}
+){}

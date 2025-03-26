@@ -1,20 +1,16 @@
-package mx.bank.ms.currency_exchange.adapters.web.resources;
+package mx.bank.ms.currency_exchange.infrastructure.messaging.message;
 
 import com.fasterxml.jackson.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * RetrieveCurrencyExchangeTransactionResponse
- */
-public record RetrieveCurrencyExchangeTransactionResponse(
-
+public record TransactionMessage(
         @JsonProperty("id")
         String id,
 
         @JsonProperty("status")
-        TransactionStatus status,
+        TransactionStatusMessage status,
 
         @JsonProperty("originalAmount")
         BigDecimal originalAmount,
@@ -28,12 +24,12 @@ public record RetrieveCurrencyExchangeTransactionResponse(
         @JsonProperty("buyAmountAndCurrency")
         @JsonInclude(JsonInclude.Include.NON_ABSENT)
         @JsonSetter(nulls = Nulls.FAIL)
-        AmountAndCurrency buyAmountAndCurrency,
+        AmountAndCurrencyMessage buyAmountAndCurrency,
 
         @JsonProperty("sellAmountAndCurrency")
         @JsonInclude(JsonInclude.Include.NON_ABSENT)
         @JsonSetter(nulls = Nulls.FAIL)
-        AmountAndCurrency sellAmountAndCurrency,
+        AmountAndCurrencyMessage sellAmountAndCurrency,
 
         @JsonProperty("resultingAmount")
         @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -47,5 +43,4 @@ public record RetrieveCurrencyExchangeTransactionResponse(
         @JsonProperty("updatedAt")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
         Date updatedAt
-
 ) {}

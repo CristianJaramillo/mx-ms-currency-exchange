@@ -1,12 +1,12 @@
 package mx.bank.ms.currency_exchange.adapters.web.resources;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import mx.bank.ms.currency_exchange.adapters.web.resources.serializer.BigDecimalFourDigitsSerializer;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * ControlCurrencyExchangeTransactionResponse
@@ -19,6 +19,7 @@ public record ControlCurrencyExchangeTransactionResponse(
         TransactionStatus status,
 
         @JsonProperty("originalAmount")
+        @JsonSerialize(using = BigDecimalFourDigitsSerializer.class)
         BigDecimal originalAmount,
 
         @JsonProperty("sourceCurrency")
@@ -40,12 +41,15 @@ public record ControlCurrencyExchangeTransactionResponse(
         @JsonProperty("resultingAmount")
         @JsonInclude(JsonInclude.Include.NON_ABSENT)
         @JsonSetter(nulls = Nulls.FAIL)
+        @JsonSerialize(using = BigDecimalFourDigitsSerializer.class)
         BigDecimal resultingAmount,
 
         @JsonProperty("createdAt")
-        String createdAt,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
+        Date createdAt,
 
         @JsonProperty("updatedAt")
-        String updatedAt
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
+        Date updatedAt
 
 ) {}

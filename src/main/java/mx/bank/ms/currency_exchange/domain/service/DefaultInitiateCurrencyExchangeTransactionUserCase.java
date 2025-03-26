@@ -1,5 +1,6 @@
 package mx.bank.ms.currency_exchange.domain.service;
 
+import mx.bank.ms.currency_exchange.domain.mapper.CurrencyExchangeTransactionMessageMapper;
 import mx.bank.ms.currency_exchange.domain.mapper.CurrencyExchangeTransactionModelMapper;
 import mx.bank.ms.currency_exchange.domain.model.CurrencyExchangeTransactionModel;
 import mx.bank.ms.currency_exchange.domain.model.CurrencyExchangeTransactionModelBuilder;
@@ -8,6 +9,8 @@ import mx.bank.ms.currency_exchange.domain.usecases.InitiateCurrencyExchangeTran
 import mx.bank.ms.currency_exchange.infrastructure.external.exchangerateapi.ExchangeRateApiClient;
 import mx.bank.ms.currency_exchange.infrastructure.external.exchangerateapi.ExchangeRateApiProperties;
 import mx.bank.ms.currency_exchange.infrastructure.external.exchangerateapi.resources.ExchangeRateLatestResponse;
+import mx.bank.ms.currency_exchange.infrastructure.messaging.CurrencyExchangeTransactionProducer;
+import mx.bank.ms.currency_exchange.infrastructure.messaging.message.TransactionMessage;
 import mx.bank.ms.currency_exchange.infrastructure.persistence.entity.CurrencyExchangeTransactionEntity;
 import mx.bank.ms.currency_exchange.infrastructure.persistence.repository.CurrencyExchangeRepository;
 import org.springframework.stereotype.Service;
@@ -22,11 +25,13 @@ public class DefaultInitiateCurrencyExchangeTransactionUserCase implements Initi
     private final ExchangeRateApiClient exchangeRateApiClient;
     private final ExchangeRateApiProperties exchangeRateApiProperties;
     private final CurrencyExchangeRepository currencyExchangeRepository;
+    private final CurrencyExchangeTransactionProducer currencyExchangeTransactionProducer;
 
-    public DefaultInitiateCurrencyExchangeTransactionUserCase(ExchangeRateApiClient exchangeRateApiClient, ExchangeRateApiProperties exchangeRateApiProperties, CurrencyExchangeRepository currencyExchangeRepository) {
+    public DefaultInitiateCurrencyExchangeTransactionUserCase(ExchangeRateApiClient exchangeRateApiClient, ExchangeRateApiProperties exchangeRateApiProperties, CurrencyExchangeRepository currencyExchangeRepository, CurrencyExchangeTransactionProducer currencyExchangeTransactionProducer) {
         this.exchangeRateApiClient = exchangeRateApiClient;
         this.exchangeRateApiProperties = exchangeRateApiProperties;
         this.currencyExchangeRepository = currencyExchangeRepository;
+        this.currencyExchangeTransactionProducer = currencyExchangeTransactionProducer;
     }
 
     @Override
@@ -54,18 +59,24 @@ public class DefaultInitiateCurrencyExchangeTransactionUserCase implements Initi
                 .sellCurrency(currencyExchangeTransactionModel.targetCurrency())
                 .sellAmount(BigDecimal.valueOf(targetRateDouble))
                 .resultingAmount(resultingAmount)
-                .createdAt(new Date().toString())
-                .updatedAt(new Date().toString())
+                .createdAt(new Date())
+                .updatedAt(new Date())
                 .build();
-
 
         CurrencyExchangeTransactionEntity currencyExchangeTransactionEntity = CurrencyExchangeTransactionModelMapper
                 .INSTANCE
                 .toEntity(currencyExchangeTransactionModelResult);
 
-        // CurrencyExchangeTransactionEntity currencyExchangeTransactionEntityStore = currencyExchangeRepository.save(currencyExchangeTransactionEntity);
+        CurrencyExchangeTransactionEntity currencyExchangeTransactionEntityStore = currencyExchangeRepository.save(currencyExchangeTransactionEntity);
 
-        return CurrencyExchangeTransactionModelMapper
-                .INSTANCE.toModel(currencyExchangeTransactionEntity);
+
+        CurrencyExchangeTransactionModel currencyExchangeTransactionModelStore = CurrencyExchangeTransactionModelMapper
+                .INSTANCE.toModel(currencyExchangeTransactionEntityStore);
+
+        TransactionMessage transactionMessage = CurrencyExchangeTransactionMessageMapper.INSTANCE.toMessage(currencyExchangeTransactionModelStore);
+
+        currencyExchangeTransactionProducer.currencyExchangeTransactionQueue(transactionMessage);
+
+        return currencyExchangeTransactionModelStore;
     }
 }

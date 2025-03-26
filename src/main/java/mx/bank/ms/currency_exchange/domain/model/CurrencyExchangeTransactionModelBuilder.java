@@ -1,6 +1,7 @@
 package mx.bank.ms.currency_exchange.domain.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class CurrencyExchangeTransactionModelBuilder {
 
@@ -14,8 +15,8 @@ public class CurrencyExchangeTransactionModelBuilder {
     private BigDecimal sellAmount;
     private String sellCurrency;
     private BigDecimal resultingAmount;
-    private String createdAt;
-    private String updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
     public CurrencyExchangeTransactionModelBuilder id(String id) {
         this.id = id;
@@ -67,12 +68,12 @@ public class CurrencyExchangeTransactionModelBuilder {
         return this;
     }
 
-    public CurrencyExchangeTransactionModelBuilder createdAt(String createdAt) {
+    public CurrencyExchangeTransactionModelBuilder createdAt(Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
-    public CurrencyExchangeTransactionModelBuilder updatedAt(String updatedAt) {
+    public CurrencyExchangeTransactionModelBuilder updatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
         return this;
     }

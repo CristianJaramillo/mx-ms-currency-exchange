@@ -1,11 +1,9 @@
 package mx.bank.ms.currency_exchange.adapters.web.resources;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * ExecuteCurrencyExchangeTransactionResponse
@@ -44,9 +42,11 @@ public record ExecuteCurrencyExchangeTransactionResponse(
         BigDecimal resultingAmount,
 
         @JsonProperty("createdAt")
-        String createdAt,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
+        Date createdAt,
 
         @JsonProperty("updatedAt")
-        String updatedAt
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
+        Date updatedAt
 
 ) {}
