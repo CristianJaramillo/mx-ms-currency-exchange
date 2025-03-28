@@ -14,9 +14,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    private final RabbitMqProperties rabbitMqProperties;
+
+    public RabbitMQConfig(RabbitMqProperties rabbitMqProperties) {
+        this.rabbitMqProperties = rabbitMqProperties;
+    }
+
     @Bean
     public CachingConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory("localhost");
+        return new CachingConnectionFactory(rabbitMqProperties.host());
     }
 
     @Bean
@@ -33,7 +39,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue myQueue() {
-        return new Queue("currency.exchange.transaction");
+        return new Queue(rabbitMqProperties.queue());
     }
 
     @Bean
