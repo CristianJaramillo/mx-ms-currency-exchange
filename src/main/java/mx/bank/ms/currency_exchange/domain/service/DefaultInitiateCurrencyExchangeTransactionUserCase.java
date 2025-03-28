@@ -1,5 +1,6 @@
 package mx.bank.ms.currency_exchange.domain.service;
 
+import jakarta.persistence.PersistenceException;
 import mx.bank.ms.currency_exchange.domain.mapper.CurrencyExchangeTransactionMessageMapper;
 import mx.bank.ms.currency_exchange.domain.mapper.CurrencyExchangeTransactionModelMapper;
 import mx.bank.ms.currency_exchange.domain.model.CurrencyExchangeTransactionModel;
@@ -10,10 +11,12 @@ import mx.bank.ms.currency_exchange.infrastructure.external.exchangerateapi.Exch
 import mx.bank.ms.currency_exchange.infrastructure.external.exchangerateapi.ExchangeRateApiProperties;
 import mx.bank.ms.currency_exchange.infrastructure.external.exchangerateapi.resources.ExchangeRateLatestResponse;
 import mx.bank.ms.currency_exchange.infrastructure.messaging.CurrencyExchangeTransactionProducer;
-import mx.bank.ms.currency_exchange.infrastructure.messaging.message.TransactionMessage;
+import mx.bank.ms.currency_exchange.infrastructure.messaging.message.CurrencyExchangeTransactionMessage;
 import mx.bank.ms.currency_exchange.infrastructure.persistence.entity.CurrencyExchangeTransactionEntity;
 import mx.bank.ms.currency_exchange.infrastructure.persistence.repository.CurrencyExchangeRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -67,16 +70,21 @@ public class DefaultInitiateCurrencyExchangeTransactionUserCase implements Initi
                 .INSTANCE
                 .toEntity(currencyExchangeTransactionModelResult);
 
-        CurrencyExchangeTransactionEntity currencyExchangeTransactionEntityStore = currencyExchangeRepository.save(currencyExchangeTransactionEntity);
+        try {
+            CurrencyExchangeTransactionEntity currencyExchangeTransactionEntityStore = currencyExchangeRepository.save(currencyExchangeTransactionEntity);
+            return CurrencyExchangeTransactionModelMapper
+                    .INSTANCE.toModel(currencyExchangeTransactionEntityStore);
+        } catch (CannotCreateTransactionException | DataAccessException | PersistenceException ex) {
 
+            CurrencyExchangeTransactionModel currencyExchangeTransactionModelPending = CurrencyExchangeTransactionModelBuilder
+                    .from(currencyExchangeTransactionModelResult)
+                    .status(TransactionStatusModel.PENDING)
+                    .build();
 
-        CurrencyExchangeTransactionModel currencyExchangeTransactionModelStore = CurrencyExchangeTransactionModelMapper
-                .INSTANCE.toModel(currencyExchangeTransactionEntityStore);
+            CurrencyExchangeTransactionMessage currencyExchangeTransactionMessage = CurrencyExchangeTransactionMessageMapper.INSTANCE.toMessage(currencyExchangeTransactionModelPending);
+            currencyExchangeTransactionProducer.currencyExchangeTransactionQueue(currencyExchangeTransactionMessage);
 
-        TransactionMessage transactionMessage = CurrencyExchangeTransactionMessageMapper.INSTANCE.toMessage(currencyExchangeTransactionModelStore);
-
-        currencyExchangeTransactionProducer.currencyExchangeTransactionQueue(transactionMessage);
-
-        return currencyExchangeTransactionModelStore;
+            return currencyExchangeTransactionModelPending;
+        }
     }
 }

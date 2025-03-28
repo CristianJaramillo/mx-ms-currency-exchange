@@ -8,12 +8,13 @@
 		<version>3.3.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>mx.bank</groupId>
+	<groupId>mx-bank</groupId>
 	<artifactId>ms-currency-exchange</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>MS Currency Exchange</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
+	<packaging>jar</packaging>
 	<licenses>
 		<license/>
 	</licenses>
@@ -93,6 +94,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>${groupId}-${artifactId}-${version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

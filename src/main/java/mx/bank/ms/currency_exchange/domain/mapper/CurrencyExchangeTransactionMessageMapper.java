@@ -1,7 +1,7 @@
 package mx.bank.ms.currency_exchange.domain.mapper;
 
 import mx.bank.ms.currency_exchange.domain.model.CurrencyExchangeTransactionModel;
-import mx.bank.ms.currency_exchange.infrastructure.messaging.message.TransactionMessage;
+import mx.bank.ms.currency_exchange.infrastructure.messaging.message.CurrencyExchangeTransactionMessage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -19,10 +19,10 @@ public interface CurrencyExchangeTransactionMessageMapper {
             @Mapping(target = "buyAmountAndCurrency", expression = "java(AmountAndCurrencyMessageMapperHelper.toAmountAndCurrency(currencyExchangeTransactionModel.buyAmount(), currencyExchangeTransactionModel.buyCurrency()))"),
             @Mapping(target = "sellAmountAndCurrency", expression = "java(AmountAndCurrencyMessageMapperHelper.toAmountAndCurrency(currencyExchangeTransactionModel.sellAmount(), currencyExchangeTransactionModel.sellCurrency()))")
     })
-    TransactionMessage toMessage(CurrencyExchangeTransactionModel currencyExchangeTransactionModel);
+    CurrencyExchangeTransactionMessage toMessage(CurrencyExchangeTransactionModel currencyExchangeTransactionModel);
 
 
-    CurrencyExchangeTransactionModel toModel(TransactionMessage message);
+    CurrencyExchangeTransactionModel toModel(CurrencyExchangeTransactionMessage message);
 
     // Funciones auxiliares
     default LocalDateTime toLocalDateTime(Date date) {
