@@ -72,8 +72,19 @@ public class DefaultInitiateCurrencyExchangeTransactionUserCase implements Initi
 
         try {
             CurrencyExchangeTransactionEntity currencyExchangeTransactionEntityStore = currencyExchangeRepository.save(currencyExchangeTransactionEntity);
-            return CurrencyExchangeTransactionModelMapper
+
+            CurrencyExchangeTransactionModel currencyExchangeTransactionModelStore = CurrencyExchangeTransactionModelMapper
                     .INSTANCE.toModel(currencyExchangeTransactionEntityStore);
+
+            CurrencyExchangeTransactionModel currencyExchangeTransactionModelInitiate = CurrencyExchangeTransactionModelBuilder
+                    .from(currencyExchangeTransactionModelStore)
+                    .status(TransactionStatusModel.PENDING)
+                    .build();
+
+            CurrencyExchangeTransactionMessage currencyExchangeTransactionMessage = CurrencyExchangeTransactionMessageMapper.INSTANCE.toMessage(currencyExchangeTransactionModelInitiate);
+            currencyExchangeTransactionProducer.currencyExchangeTransactionQueue(currencyExchangeTransactionMessage);
+
+            return currencyExchangeTransactionModelStore;
         } catch (CannotCreateTransactionException | DataAccessException | PersistenceException ex) {
 
             CurrencyExchangeTransactionModel currencyExchangeTransactionModelPending = CurrencyExchangeTransactionModelBuilder
